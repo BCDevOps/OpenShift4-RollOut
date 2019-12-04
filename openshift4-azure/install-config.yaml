@@ -1,0 +1,40 @@
+apiVersion: v1
+baseDomain: example.com 
+controlPlane: 
+  hyperthreading: Enabled   
+  name: master
+  platform:
+    azure:
+      osDisk:
+        diskSizeGB: 512 
+      type: Standard_D8s_v3
+  replicas: 3
+compute: 
+- hyperthreading: Enabled 
+  name: worker
+  platform:
+    azure:
+      type: Standard_D2s_v3
+      osDisk:
+        diskSizeGB: 512 
+      zones: 
+      - "1"
+      - "2"
+      - "3"
+  replicas: 5
+metadata:
+  name: test-cluster 
+networking:
+  clusterNetwork:
+  - cidr: 10.128.0.0/14
+    hostPrefix: 23
+  machineCIDR: 10.0.0.0/16
+  networkType: OpenShiftSDN
+  serviceNetwork:
+  - 172.30.0.0/16
+platform:
+  azure:
+    region: canadacentral 
+    baseDomainResourceGroupName: resource-group 
+pullSecret: '{"auths": ...}' 
+sshKey: ssh-ed25519 AAAA... 
