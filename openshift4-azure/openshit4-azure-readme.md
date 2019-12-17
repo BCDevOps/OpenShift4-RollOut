@@ -73,9 +73,21 @@ We will be able to leverage Azure file and block options for PV usage in the clu
 
 A more detailed PV design will be determined at a later date.
 
+### Azure File
+
+https://docs.openshift.com/container-platform/4.2/storage/dynamic-provisioning.html#azure-disk-definition_dynamic-provisioning
+
 ## Key Vault
 
 An Azure KeyVault will be created to store secrets required for the OpenShift install. Secure information like node ssh keys, pull-secrets, and kubeadmin password will be stored here.
+
+Push secrets to the key vault.
+
+`az keyvault secret set --vault-name ocp4lab-kv --name ocp4lab-ssh-pub --encoding base64 --file ~/.ssh/key.pub`
+
+Pull down the secret from the key vault.
+ 
+`az keyvault secret download --vault-name ocp4lab-kv --name ocp4lab-ssh-pub --file ~/key.pub --encoding base64`
 
 ## Automation 
 
@@ -86,3 +98,9 @@ Any prep work needed in Azure to create the cluster will be automated via the te
 ## Authentication 
 
 The cluster will be set up to use GitHub Organizations as the identity provider. Details to be added in.
+
+Documentation here: https://docs.openshift.com/container-platform/4.2/authentication/identity_providers/configuring-github-identity-provider.html
+
+We will need github oauth details for this step.
+
+## SSL Certificates

@@ -26,6 +26,6 @@ resource "azurerm_key_vault" "keyvault" {
   sku_name = "standard"
 
   tags = {
-    environment = "Production"
+    environment = var.env_tag
   }
 }
