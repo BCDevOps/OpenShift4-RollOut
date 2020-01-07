@@ -39,6 +39,8 @@ The Master VM sizes will start with a bit more resources than the recommended mi
 
 The nodes will receive 1 OS disks with 150GB of storage. This is around the recommended minimum disk sizes. A better disk and partition scheme will be determined at a later date so we are not relying on a single disk.
 
+INFRA NODES?!
+
 ## Networking
 
 The default networking options will be selected to start with, which can be changed at a later date.
@@ -104,3 +106,7 @@ Documentation here: https://docs.openshift.com/container-platform/4.2/authentica
 We will need github oauth details for this step.
 
 ## SSL Certificates
+
+## Costing
+
+Put in cost estimations here.
