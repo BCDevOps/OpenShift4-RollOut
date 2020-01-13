@@ -1,5 +1,31 @@
 # OpenShift 4 on Azure Readme
 
+- [OpenShift 4 on Azure Readme](#openshift-4-on-azure-readme)
+  - [Pre-req](#pre-req)
+  - [Region](#region)
+  - [Azure SP Account](#azure-sp-account)
+  - [Subscription Info](#subscription-info)
+  - [Node Details](#node-details)
+  - [Networking](#networking)
+    - [DNS](#dns)
+  - [Cluster PV Storage](#cluster-pv-storage)
+    - [Azure File](#azure-file)
+      - [Resources:](#resources)
+  - [Key Vault](#key-vault)
+  - [Automation](#automation)
+  - [Authentication](#authentication)
+  - [SSL Certificates](#ssl-certificates)
+  - [Costing](#costing)
+
+## Pre-req
+
+Microsoft.ManagedIdentity
+
+not a full list of needed but this one was diabled and needed to be enabled.
+
+## Region
+
+If deploying to Canada Central or Canada East Azure regions there are no availability zone options. If a diaster occurred at one of these datacenters the OpenShift cluster would suffer an outage. Opposed to an Azure region that had multiple zones or locations.
 
 ## Azure SP Account
 
@@ -73,11 +99,31 @@ ns4-07.azure-dns.info.
 
 We will be able to leverage Azure file and block options for PV usage in the cluster. We can also create PVs based on Azure disk performance/pricing options.
 
-A more detailed PV design will be determined at a later date.
+A more detailed PV design will be determined at a later date. Azure Netapp Files is an option that can be looked at as well.
 
 ### Azure File
 
-https://docs.openshift.com/container-platform/4.2/storage/dynamic-provisioning.html#azure-disk-definition_dynamic-provisioning
+We create a storage account in Azure and specify this in the azure-file storage class so file storage can be dynamically created.
+
+* Account Kind: StorageV2
+* Performance: Standard 
+* Replication: GRS
+* Network: Public Endpoint (select the created ocp4 vnet & 2 subnets)
+Note: This creates a publicly accessible storage service endpoints but locks down what networks can access it.
+* Secure Transfer: Enabled
+
+If we want to lock down the storage account to just the file service we can select Premium as the performance option. The issue is when using Premium the smallest size of the PV which relates to storage account quota is 100GB. Premium is priced on provisioned storage where standard is priced on used storage. Premium IO and network bandwidth limits scale with the provisioned share size.
+
+In our azure-file storage class we set a value for secretNamespace parameter, as this is the namespace that stores the storage account keys in a secret. If not set the storage account credentials may be read by other users.
+
+#### Resources:
+
+* Pricing: https://azure.microsoft.com/en-us/pricing/details/storage/files/
+* Storage Network Security: https://docs.microsoft.com/en-us/azure/storage/common/storage-network-security
+* K8s azure-file SC info: https://kubernetes.io/docs/concepts/storage/storage-classes/#azure-file
+* OCP manual Azure File: https://docs.openshift.com/container-platform/4.2/storage/persistent-storage/persistent-storage-azure-file.html
+* OCP dynamic Azure File: https://docs.openshift.com/container-platform/4.2/storage/dynamic-provisioning.html#azure-file-definition_dynamic-provisioning
+* Microsoft Docs K8s Azure File: https://docs.microsoft.com/en-us/azure/aks/azure-files-dynamic-pv
 
 ## Key Vault
 
