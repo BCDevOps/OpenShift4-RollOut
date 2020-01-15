@@ -1,0 +1,64 @@
+apiVersion: machine.openshift.io/v1beta1
+kind: MachineSet
+metadata:
+  labels:
+    machine.openshift.io/cluster-api-cluster: ocp4lab-nrl2r 
+    machine.openshift.io/cluster-api-machine-role: infra
+    machine.openshift.io/cluster-api-machine-type: infra
+  name: ocp4lab-nrl2r-infra-canadacentral
+  namespace: openshift-machine-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      machine.openshift.io/cluster-api-cluster: ocp4lab-nrl2r 
+      machine.openshift.io/cluster-api-machineset: ocp4lab-nrl2r-infra-canadacentral
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        machine.openshift.io/cluster-api-cluster: ocp4lab-nrl2r 
+        machine.openshift.io/cluster-api-machine-role: infra 
+        machine.openshift.io/cluster-api-machine-type: infra 
+        machine.openshift.io/cluster-api-machineset: ocp4lab-nrl2r-infra-canadacentral
+    spec:
+      metadata:
+        creationTimestamp: null
+        labels: 
+          node-role.kubernetes.io/infra: ""
+      providerSpec:
+        value:
+          apiVersion: azureproviderconfig.openshift.io/v1beta1
+          credentialsSecret:
+            name: azure-cloud-credentials
+            namespace: openshift-machine-api
+          image:
+            offer: ""
+            publisher: ""
+            resourceID: /resourceGroups/ocp4lab-nrl2r-rg/providers/Microsoft.Compute/images/ocp4lab-nrl2r
+            sku: ""
+            version: ""
+          internalLoadBalancer: ""
+          kind: AzureMachineProviderSpec
+          location: canadacentral
+          managedIdentity: ocp4lab-nrl2r-identity 
+          metadata:
+            creationTimestamp: null
+          natRule: null
+          networkResourceGroup: ""
+          osDisk:
+            diskSizeGB: 128
+            managedDisk:
+              storageAccountType: Premium_LRS
+            osType: Linux
+          publicIP: false
+          publicLoadBalancer: ""
+          resourceGroup: ocp4lab-nrl2r-rg 
+          sshPrivateKey: ""
+          sshPublicKey: ""
+          subnet: ocp4lab-nrl2r-worker-subnet   
+          userDataSecret:
+            name: worker-user-data 
+          vmSize: Standard_D2s_v3
+          vnet: ocp4lab-nrl2r-vnet 
+          zone: "" 
