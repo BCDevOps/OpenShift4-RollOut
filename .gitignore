@@ -1,2 +1,3 @@
 *install-config.yaml
 *osServicePrincipal.json
+openshift4-azure/install-config-dir/*

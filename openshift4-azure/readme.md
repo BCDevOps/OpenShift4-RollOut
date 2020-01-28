@@ -33,3 +33,6 @@
 
 * Create the storage class:
     `oc apply -f storageclass-azure-file.yaml`
+
+
+`az keyvault set-policy --name ocp4lab-kv --upn shea.phillips_keystonesystems.ca#EXT#@bcgov.onmicrosoft.com --secret-permissions get list set delete --key-permissions create decrypt delete encrypt get list unwrapKey wrapKey`
