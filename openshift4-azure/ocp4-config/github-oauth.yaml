@@ -9,7 +9,7 @@ spec:
     - github:
         clientID: XXX
         clientSecret:
-          name: github-client-secret-xnxpc
+          name: github-oauth
         hostname: ''
         organizations: []
         teams:

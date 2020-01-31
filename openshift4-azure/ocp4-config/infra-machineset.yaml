@@ -2,25 +2,25 @@ apiVersion: machine.openshift.io/v1beta1
 kind: MachineSet
 metadata:
   labels:
-    machine.openshift.io/cluster-api-cluster: ocp4lab-nrl2r 
+    machine.openshift.io/cluster-api-cluster: ocp4lab-9qtf7
     machine.openshift.io/cluster-api-machine-role: infra
     machine.openshift.io/cluster-api-machine-type: infra
-  name: ocp4lab-nrl2r-infra-canadacentral
+  name: ocp4lab-9qtf7-infra-canadacentral
   namespace: openshift-machine-api
 spec:
   replicas: 3
   selector:
     matchLabels:
-      machine.openshift.io/cluster-api-cluster: ocp4lab-nrl2r 
-      machine.openshift.io/cluster-api-machineset: ocp4lab-nrl2r-infra-canadacentral
+      machine.openshift.io/cluster-api-cluster: ocp4lab-9qtf7 
+      machine.openshift.io/cluster-api-machineset: ocp4lab-9qtf7-infra-canadacentral
   template:
     metadata:
       creationTimestamp: null
       labels:
-        machine.openshift.io/cluster-api-cluster: ocp4lab-nrl2r 
+        machine.openshift.io/cluster-api-cluster: ocp4lab-9qtf7 
         machine.openshift.io/cluster-api-machine-role: infra 
         machine.openshift.io/cluster-api-machine-type: infra 
-        machine.openshift.io/cluster-api-machineset: ocp4lab-nrl2r-infra-canadacentral
+        machine.openshift.io/cluster-api-machineset: ocp4lab-9qtf7-infra-canadacentral
     spec:
       metadata:
         creationTimestamp: null
@@ -35,13 +35,13 @@ spec:
           image:
             offer: ""
             publisher: ""
-            resourceID: /resourceGroups/ocp4lab-nrl2r-rg/providers/Microsoft.Compute/images/ocp4lab-nrl2r
+            resourceID: /resourceGroups/ocp4lab-9qtf7-rg/providers/Microsoft.Compute/images/ocp4lab-9qtf7
             sku: ""
             version: ""
           internalLoadBalancer: ""
           kind: AzureMachineProviderSpec
           location: canadacentral
-          managedIdentity: ocp4lab-nrl2r-identity 
+          managedIdentity: ocp4lab-9qtf7-identity 
           metadata:
             creationTimestamp: null
           natRule: null
@@ -53,12 +53,12 @@ spec:
             osType: Linux
           publicIP: false
           publicLoadBalancer: ""
-          resourceGroup: ocp4lab-nrl2r-rg 
+          resourceGroup: ocp4lab-9qtf7-rg 
           sshPrivateKey: ""
           sshPublicKey: ""
-          subnet: ocp4lab-nrl2r-worker-subnet   
+          subnet: ocp4lab-9qtf7-worker-subnet   
           userDataSecret:
             name: worker-user-data 
-          vmSize: Standard_D2s_v3
-          vnet: ocp4lab-nrl2r-vnet 
+          vmSize: Standard_D4s_v3
+          vnet: ocp4lab-9qtf7-vnet 
           zone: "" 
