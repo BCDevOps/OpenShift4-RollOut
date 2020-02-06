@@ -17,6 +17,14 @@ resource "azurerm_storage_account" "example" {
   }
 }
 
+
+resource "azurerm_storage_container" "example" {
+  name                  = var.metering
+  resource_group_name   = "${azurerm_resource_group.example.name}"
+  storage_account_name  = "${azurerm_storage_account.example.name}"
+  container_access_type = "private"
+}
+
 resource "null_resource" "ocp4-post-install" {
   provisioner "local-exec" { 
     command = <<EOT
@@ -33,15 +41,28 @@ resource "null_resource" "ocp4-post-install" {
       echo "Deploy and set up infrastructure nodes"
       oc --kubeconfig ../install-config-dir/auth/kubeconfig apply -f ../ocp4-config/infra-machineset.yaml
       watch
-      oc --kubeconfig ../install-config-dir/auth/kubeconfig patch ingresscontroller/default -n openshift-ingress-operator -p '{"spec":{"nodePlacement":{"nodeSelector":{"matchLabels":{"node-role.kubernetes.io/infra":""}}}}}'
-      oc --kubeconfig ../install-config-dir/auth/kubeconfig patch config/cluster -p '{"spec":{"nodeSelector":{"node-role.kubernetes.io/infra":""}}}}}'
+      oc --kubeconfig ../install-config-dir/auth/kubeconfig patch ingresscontroller/default -n openshift-ingress-operator -p '{"spec":{"nodePlacement":{"nodeSelector":{"matchLabels":{"node-role.kubernetes.io/infra":""}}}}}' --type merge
+      oc --kubeconfig ../install-config-dir/auth/kubeconfig patch config/cluster -p '{"spec":{"nodeSelector":{"node-role.kubernetes.io/infra":""}}}' --type merge
       oc --kubeconfig ../install-config-dir/auth/kubeconfig apply -f ../ocp4-config/cluster-monitoring-configmap.yaml
       echo "Deploy loggging"
       oc --kubeconfig ../install-config-dir/auth/kubeconfig apply -f ../ocp4-config/logging-preconfig.yaml
       oc --kubeconfig ../install-config-dir/auth/kubeconfig apply -f ../ocp4-config/logging-deploy.yaml
+      echo "Setup project template"
+      oc --kubeconfig ../install-config-dir/auth/kubeconfig -n openshift-config apply -f https://raw.githubusercontent.com/BCDevOps/openshift-tools/master/templates/default/project-request.json
+      oc --kubeconfig ../install-config-dir/auth/kubeconfig patch project.config.openshift.io/cluster -p '{"spec":{"projectRequestTemplate":{"name":"project-request1"}}}' --type merge 
       EOT
   }
 }
+
+
+#Deploy metering stack
+- install the operator 
+oc --kubeconfig ../install-config-dir/auth/kubeconfig apply -f ../ocp4-config/metering-operator.yaml
+- install config - uses storage container and key
+oc --kubeconfig ../install-config-dir/auth/kubeconfig apply -f ../ocp4-config/metering-config.yaml
+- add in reports
+oc --kubeconfig ../install-config-dir/auth/kubeconfig apply -f ../ocp4-config/metering-reports.yaml
+
 
 #oc get -o jsonpath='{.status.infrastructureName}{"\n"}' infrastructure cluster
 

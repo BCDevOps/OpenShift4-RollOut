@@ -3,15 +3,22 @@ baseDomain: clearwater.devops.gov.bc.ca
 compute:
 - hyperthreading: Enabled
   name: worker
-  platform: {}
+  platform:
+    azure:
+      type: Standard_D4s_v3
+      osDisk:
+        diskSizeGB: 128 
   replicas: 3
 controlPlane:
   hyperthreading: Enabled
   name: master
-  platform: {}
+  platform:
+    azure:
+      type: Standard_D4s_v3
+      osDisk:
+        diskSizeGB: 512 
   replicas: 3
 metadata:
-  creationTimestamp: null
   name: ocp4lab
 networking:
   clusterNetwork:

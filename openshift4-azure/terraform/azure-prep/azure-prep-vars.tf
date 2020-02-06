@@ -7,11 +7,11 @@ variable "location" {
 }
 
 variable "dns_name" {
-    default = "clearwater.devops.gov.bc.ca"
+    default = "test.notreal.org"
 }
 
 variable "kv_name" {
-    default = "ocp4lab-kv"
+    default = "ocp4lab-keyvault"
 }
 
 variable "env_tag" {
@@ -19,5 +19,5 @@ variable "env_tag" {
 }
 
 variable "tenant_id" {
-    default = "6fdb5200-3d0d-4a8a-b036-d3685e359adc"
+    default = "989c2cc4-0ca4-45d0-92d3-57b031a71bd8"
 }

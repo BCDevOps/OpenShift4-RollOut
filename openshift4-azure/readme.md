@@ -2,6 +2,48 @@
 
 [OCP 4 Azure Architecture doc](openshit4-azure-architecture.md)
 
+## Azure Prep
+
+A few items need to be in place in Azure before installing the cluster. Mainly a DNS zone and an Service Principal account. 
+
+You will need the Tenant Administrator role in Azure AD to create the SP account
+
+`az ad sp create-for-rbac --role Contributor --name ocp4lab-sp`
+
+The service principal requires the legacy Azure Active Directory Graph → Application.ReadWrite.OwnedBy permission and the User Access Administrator role for the cluster to assign credentials for its components.
+
+`az role assignment create --role "User Access Administrator" --assignee-object-id $(az ad sp list --filter "appId eq '<appId>'" | jq '.[0].objectId' -r)`
+
+Approve the permissions request. If your account does not have the Azure Active Directory tenant administrator role, follow the guidelines for your organization to request that the tenant administrator approve your permissions request.
+
+`az ad app permission add --id <appId> --api 00000002-0000-0000-c000-000000000000 --api-permissions 824c81eb-e3f8-4ee6-8f6d-de7f50d565b7=Role`
+
+This may need to be done via the Azure web portal under the SP account and granting permission.
+
+The `terraform/azure-prep` folder contains Terraform file and vars to deploy the needed DNS and create a KeyVault to store secrets. Update the vars file and run `terraform init && terraform apply` 
+
+## Azure Resource Providers
+
+Not a full list of needed enabled subscription resource providers but this one was disabled and needed to be enabled for the install to work.
+
+* Microsoft.ManagedIdentity
+
+
+### Azure KeyVault
+
+An Azure KeyVault will be created to store secrets required for the OpenShift install. Secure information like node ssh keys, pull-secrets, and kubeadmin password will be stored here.
+
+Push secrets to the key vault.
+
+`az keyvault secret set --vault-name ocp4lab-kv --name ocp4lab-ssh-pub --encoding base64 --file ~/.ssh/key.pub`
+
+Pull down the secret from the key vault.
+ 
+`az keyvault secret download --vault-name ocp4lab-kv --name ocp4lab-ssh-pub --file ~/key.pub --encoding base64`
+
+You will need to add Azure user to policies on the key vault to allow them to update or view secrets. This can be done via the UI or the az command.
+
+`az keyvault set-policy --name ocp4lab-kv --upn shea.phillips_keystonesystems.ca#EXT#@bcgov.onmicrosoft.com --secret-permissions get list set delete --key-permissions create decrypt delete encrypt get list unwrapKey wrapKey`
 
 ## Deploy OCP 4 on Azure
 
@@ -21,18 +63,4 @@
 
 ## Configure OCP 4 on Azure
 
-### Add Azure File Storage
-
-* Add the cluster role to access to create and view secrets:
-
-    `oc apply -f azure-file-clusterrole.yaml`
-
-* Add the role to the persistent-volume-binder account:
-
-    `oc adm policy add-cluster-role-to-user system:azure-file system:serviceaccount:kube-system:persistent-volume-binder`
-
-* Create the storage class:
-    `oc apply -f storageclass-azure-file.yaml`
-
-
-`az keyvault set-policy --name ocp4lab-kv --upn shea.phillips_keystonesystems.ca#EXT#@bcgov.onmicrosoft.com --secret-permissions get list set delete --key-permissions create decrypt delete encrypt get list unwrapKey wrapKey`
+The post install configuration is handled with the Terraform plan and ocp config files in the `ocp4-config` directory
