@@ -5,7 +5,7 @@ compute:
   name: worker
   platform:
     azure:
-      type: Standard_D4s_v3
+      type: Standard_D8s_v3
       osDisk:
         diskSizeGB: 128 
   replicas: 3
@@ -14,9 +14,9 @@ controlPlane:
   name: master
   platform:
     azure:
-      type: Standard_D4s_v3
+      type: Standard_D8s_v3
       osDisk:
-        diskSizeGB: 512 
+        diskSizeGB: 128 
   replicas: 3
 metadata:
   name: ocp4lab

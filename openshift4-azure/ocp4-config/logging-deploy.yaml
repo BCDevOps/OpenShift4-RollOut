@@ -10,11 +10,11 @@ spec:
     elasticsearch:
       resources:
         limits:
-          cpu: 1
-          memory: 6Gi
+          cpu: 2
+          memory: 16Gi
         requests:
-          cpu: 1
-          memory: 6Gi
+          cpu: 2
+          memory: 16Gi
       nodeCount: 3 
       nodeSelector: 
           node-role.kubernetes.io/infra: ''
@@ -31,7 +31,7 @@ spec:
   curation:
     type: "curator"  
     curator:
-      schedule: "30 3 * * *"
+      schedule: "0 0 * * *"
       nodeSelector: 
           node-role.kubernetes.io/infra: ''
   collection:

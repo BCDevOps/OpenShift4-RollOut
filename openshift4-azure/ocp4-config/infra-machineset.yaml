@@ -59,6 +59,6 @@ spec:
           subnet: ocp4lab-9qtf7-worker-subnet   
           userDataSecret:
             name: worker-user-data 
-          vmSize: Standard_D4s_v3
+          vmSize: Standard_D8s_v3
           vnet: ocp4lab-9qtf7-vnet 
           zone: "" 
