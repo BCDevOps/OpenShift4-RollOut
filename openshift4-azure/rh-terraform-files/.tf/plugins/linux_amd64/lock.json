@@ -1,0 +1,7 @@
+{
+  "azureprivatedns": "35acb6547c43735a8f0bc3f7faccc7c7d7988f6aef80f5619aa202423aca6cf5",
+  "azurerm": "35acb6547c43735a8f0bc3f7faccc7c7d7988f6aef80f5619aa202423aca6cf5",
+  "ignition": "35acb6547c43735a8f0bc3f7faccc7c7d7988f6aef80f5619aa202423aca6cf5",
+  "local": "35acb6547c43735a8f0bc3f7faccc7c7d7988f6aef80f5619aa202423aca6cf5",
+  "random": "35acb6547c43735a8f0bc3f7faccc7c7d7988f6aef80f5619aa202423aca6cf5"
+}
