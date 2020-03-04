@@ -19,5 +19,5 @@ variable "env_tag" {
 }
 
 variable "tenant_id" {
-    default = "989c2cc4-0ca4-45d0-92d3-57b031a71bd8"
+    default = "989c2cc4-0ca4-45d0-92d3-57b031a7XXXX"
 }

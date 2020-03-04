@@ -1,0 +1,64 @@
+apiVersion: machine.openshift.io/v1beta1
+kind: MachineSet
+metadata:
+  labels:
+    machine.openshift.io/cluster-api-cluster: {{ clust_name }}
+    machine.openshift.io/cluster-api-machine-role: infra
+    machine.openshift.io/cluster-api-machine-type: infra
+  name: {{ clust_name }}-infra-canadacentral
+  namespace: openshift-machine-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      machine.openshift.io/cluster-api-cluster: {{ clust_name }} 
+      machine.openshift.io/cluster-api-machineset: {{ clust_name }}-infra-canadacentral
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        machine.openshift.io/cluster-api-cluster: {{ clust_name }} 
+        machine.openshift.io/cluster-api-machine-role: infra 
+        machine.openshift.io/cluster-api-machine-type: infra 
+        machine.openshift.io/cluster-api-machineset: {{ clust_name }}-infra-canadacentral
+    spec:
+      metadata:
+        creationTimestamp: null
+        labels: 
+          node-role.kubernetes.io/infra: ""
+      providerSpec:
+        value:
+          apiVersion: azureproviderconfig.openshift.io/v1beta1
+          credentialsSecret:
+            name: azure-cloud-credentials
+            namespace: openshift-machine-api
+          image:
+            offer: ""
+            publisher: ""
+            resourceID: /resourceGroups/{{ clust_name }}-rg/providers/Microsoft.Compute/images/{{ clust_name }}
+            sku: ""
+            version: ""
+          internalLoadBalancer: ""
+          kind: AzureMachineProviderSpec
+          location: canadacentral
+          managedIdentity: {{ clust_name }}-identity 
+          metadata:
+            creationTimestamp: null
+          natRule: null
+          networkResourceGroup: ""
+          osDisk:
+            diskSizeGB: 128
+            managedDisk:
+              storageAccountType: Premium_LRS
+            osType: Linux
+          publicIP: false
+          publicLoadBalancer: ""
+          resourceGroup: {{ clust_name }}-rg 
+          sshPrivateKey: ""
+          sshPublicKey: ""
+          subnet: {{ clust_name }}-worker-subnet   
+          userDataSecret:
+            name: worker-user-data 
+          vmSize: Standard_D8s_v3
+          vnet: {{ clust_name }}-vnet 
+          zone: "" 

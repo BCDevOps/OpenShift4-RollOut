@@ -5,12 +5,12 @@ metadata:
 spec:
   identityProviders:
     - github:
-        clientID: xxxxxx
+        clientID: {{ github_oauth_clientid }}
         clientSecret:
           name: github-oauth
         organizations: []
         teams:
-          - BCDevOps/azure-sandbox-user-team
+          - {{ github_oauth_teams }}
       mappingMethod: claim
       name: github
       type: GitHub

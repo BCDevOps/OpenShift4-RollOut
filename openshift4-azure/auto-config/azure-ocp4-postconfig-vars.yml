@@ -1,0 +1,9 @@
+---
+storage_account_name: ocp4labpvstorage1
+storage_account_location: canadacentral
+storage_account_tier: Standard
+storage_account_rep_teir: GRS
+storage_account_tag: ocp4lab
+github_oauth_teams: BCDevOps/azure-sandbox-user-team
+github_oauth_clientid: 
+github_oauth_secret:

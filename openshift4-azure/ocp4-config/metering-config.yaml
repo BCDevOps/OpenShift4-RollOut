@@ -9,4 +9,4 @@ spec:
       type: "azure"
       azure:
         container: "metering-data" 
-        secretName: "azure-storage-account-ocp4labfilestorage-secret"
+        secretName: "azure-storage-key"

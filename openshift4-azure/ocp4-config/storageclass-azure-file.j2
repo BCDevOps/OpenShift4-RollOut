@@ -4,5 +4,5 @@ metadata:
   name: azure-file
 provisioner: kubernetes.io/azure-file
 parameters:
-  storageAccount: ocp4labpvstorage1
+  storageAccount: {{ storage_account_name }}
   secretNamespace: default

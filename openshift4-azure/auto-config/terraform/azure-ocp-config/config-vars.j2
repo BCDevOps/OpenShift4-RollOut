@@ -1,0 +1,27 @@
+variable "stor_account_name" {
+  default = "{{ storage_account_name }}"
+}
+
+variable "rg_name" {
+  default = "{{ clust_name }}-rg"
+}
+
+variable "location" {
+  default = "{{ storage_account_location }}"
+}
+
+variable "account_tier" {
+  default = "{{ storage_account_tier }}"
+}
+
+variable "replication_teir" {
+  default = "{{ storage_account_rep_teir }}"
+}
+
+variable "https_traffic" {
+  default = "true"
+}
+
+variable "tag" {
+  default = "{{ storage_account_tag }}"
+}

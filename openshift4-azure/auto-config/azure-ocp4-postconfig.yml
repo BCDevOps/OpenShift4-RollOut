@@ -1,0 +1,107 @@
+---
+- name: "Azure OCP4 Post-Install Configuration"
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars_files:
+    - azure-ocp4-postconfig-vars.yml
+
+  tasks:
+    - name: "Get Cluster ID"
+      shell: oc --kubeconfig ../install-dir/auth/kubeconfig get -o jsonpath='{.status.infrastructureName}{"\n"}' infrastructure cluster
+      register: clust_name_output
+
+    - set_fact:
+        clust_name: "{{ clust_name_output.stdout }}"
+
+    - name: "Create Infa Nodes MachineSet yaml"
+      template:
+        src: ../ocp4-config/infra-machineset.j2
+        dest: ../ocp4-config/infra-machineset.yaml
+
+    - name: "Deploy Infra Nodes"
+      shell: oc --kubeconfig ../install-dir/auth/kubeconfig apply -f ../ocp4-config/infra-machineset.yaml
+
+    - name: "Generate vars file for Terraform"
+      template: 
+        src: ./terraform/azure-ocp-config/config-vars.j2
+        dest: ./terraform/azure-ocp-config/config-vars.tf
+
+    - name: "Create Azure Storage Account via Terraform"
+      terraform:
+        project_path:  ./terraform/azure-ocp-config/
+        force_init: true
+        state: present 
+      register: tf_output
+
+ #   - debug:
+ #       var: tf_output.outputs.storage_access_key.value
+
+    - set_fact:
+        storage_acct_key: "{{ tf_output.outputs.storage_access_key.value }}"
+
+    - name: "Generate Azure file StorageClass yaml"
+      template: 
+        src: ../ocp4-config/storageclass-azure-file.j2
+        dest: ../ocp4-config/storageclass-azure-file.yaml
+
+    - name: "Setting up Azure File StorageClass"
+      shell: | 
+        oc --kubeconfig ../install-dir/auth/kubeconfig apply -f ../ocp4-config/azure-file-clusterrole.yaml
+        oc --kubeconfig ../install-dir/auth/kubeconfig adm policy add-cluster-role-to-user system:azure-file system:serviceaccount:kube-system:persistent-volume-binder
+        oc --kubeconfig ../install-dir/auth/kubeconfig apply -f ../ocp4-config/storageclass-azure-file.yaml
+
+    - name: "Setting up Azure Disk StorageClass"
+      shell: oc --kubeconfig ../install-dir/auth/kubeconfig apply -f ../ocp4-config/storageclass-azure-disk.yaml
+
+    - name: "Remove Default-class from managed-premium SC"
+      shell: oc --kubeconfig ../install-dir/auth/kubeconfig patch sc managed-premium -p '{"metadata":{"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+
+    - name: "Generate Github oauth yaml"
+      template: 
+        src: ../ocp4-config/github-oauth.j2
+        dest: ../ocp4-config/github-oauth.yaml
+
+    - name: "Setting up GitHub OAuth config"
+      shell: |
+        oc --kubeconfig ../install-dir/auth/kubeconfig create secret generic github-oatuh --from-literal=clientSecret={{ github_oauth_secret }} -n openshift-config
+        oc --kubeconfig ../install-dir/auth/kubeconfig apply -f ../ocp4-config/github-oauth.yaml
+
+    - name: "Disabling project self-provisioning"
+      shell: |
+        oc --kubeconfig ../install-dir/auth/kubeconfig adm policy remove-cluster-role-from-group self-provisioner system:authenticated:oauth
+        oc --kubeconfig ../install-dir/auth/kubeconfig annotate clusterrolebinding.rbac self-provisioners 'rbac.authorization.kubernetes.io/autoupdate=false' --overwritecluster role "self-provisioner" removed: "system:authenticated:oauth"
+
+    - name: "Wait for infra nodes to be ready"
+      shell: oc --kubeconfig ../install-dir/auth/kubeconfig get nodes | grep infra | awk '{print $2}' | paste -d, -s
+      register: result
+      until: result.stdout == "Ready,Ready,Ready"
+      retries: 40
+      delay: 15
+
+    - name: "Move Infra pods to Infra Nodes"
+      shell: |
+        oc --kubeconfig ../install-dir/auth/kubeconfig patch ingresscontroller/default -n openshift-ingress-operator -p '{"spec":{"nodePlacement":{"nodeSelector":{"matchLabels":{"node-role.kubernetes.io/infra":""}}}}}' --type merge
+        oc --kubeconfig ../install-dir/auth/kubeconfig patch config/cluster -p '{"spec":{"nodeSelector":{"node-role.kubernetes.io/infra":""}}}' --type merge
+        oc --kubeconfig ../install-dir/auth/kubeconfig apply -f ../ocp4-config/cluster-monitoring-configmap.yaml
+
+    - name: "Remove Worker label from Infra nodes"
+      shell: for x in $(oc --kubeconfig ../install-dir/auth/kubeconfig get nodes | grep infra | awk '{print $1}'); do oc label node  $x node-role.kubernetes.io/worker- ; done
+
+    - name: "Deploy OCP Logging"
+      shell: |
+        oc --kubeconfig ../install-dir/auth/kubeconfig apply -f ../ocp4-config/logging-preconfig.yaml
+        oc --kubeconfig ../install-dir/auth/kubeconfig apply -f ../ocp4-config/logging-deploy.yaml
+
+    - name: "Setup OCP project template"
+      shell: |
+        oc --kubeconfig ../install-dir/auth/kubeconfig -n openshift-config apply -f https://raw.githubusercontent.com/BCDevOps/openshift-tools/master/templates/default/project-request.json
+        oc --kubeconfig ../install-dir/auth/kubeconfig patch project.config.openshift.io/cluster -p '{"spec":{"projectRequestTemplate":{"name":"project-request"}}}' --type merge 
+
+    - name: "Deploy OCP metering stack"
+      shell: |
+         oc --kubeconfig ../install-dir/auth/kubeconfig create namespace openshift-metering
+         oc --kubeconfig ../install-dir/auth/kubeconfig create secret -n openshift-metering generic azure-storage-key --from-literal=azure-storage-account-name={{ storage_account_name }} --from-literal=azure-secret-access-key={{ storage_acct_key }}
+         oc --kubeconfig ../install-dir/auth/kubeconfig apply -f ../ocp4-config/metering-operator.yaml
+         oc --kubeconfig ../install-dir/auth/kubeconfig apply -f ../ocp4-config/metering-config.yaml
+         oc --kubeconfig ../install-dir/auth/kubeconfig apply -f ../ocp4-config/metering-reports.yaml

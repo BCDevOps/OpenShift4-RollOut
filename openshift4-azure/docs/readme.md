@@ -64,3 +64,9 @@ You will need to add Azure user to policies on the key vault to allow them to up
 ## Configure OCP 4 on Azure
 
 The post install configuration is handled with the Terraform plan and ocp config files in the `ocp4-config` directory
+
+
+--extra-vars "github_oauth_secret=foo github_oauth_clientid="
+
+
+az account set --subscription XXXX

@@ -1,11 +1,5 @@
-#export TF_VAR_clientsec=us-west-1
-
-#variable "clientsec" {
-#    default = ""
-#}
-
 variable "stor_account_name" {
-  default = "ocp4labpvstorage"
+  default = "ocp4labpvstorage1"
 }
 
 variable "rg_name" {
@@ -30,8 +24,4 @@ variable "https_traffic" {
 
 variable "tag" {
   default = "ocp4lab"
-}
-
-variable "metering_name" {
-  default = "openshiftmetering"
 }
