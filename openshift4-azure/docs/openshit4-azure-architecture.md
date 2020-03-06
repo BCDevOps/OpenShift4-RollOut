@@ -26,13 +26,14 @@
   - [Metering](#metering)
     - [Resources](#resources-2)
 
+
 ## Purpose
 
-This document is intended to outline the design of the OpenShift Container Platform v4 on Azure. This is the first generation of OpenShift in a cloud platform at BC Gov.  As the cluster is deployed and applications loaded on, architecture decisions may be updated and/or changed.
+This document is intended to outline the design of the OpenShift Container Platform v4 on Azure. This is the first generation of OpenShift in a cloud platform at BC Gov, as the cluster is deployed and applications loaded on architecture decisions may be updated and changed.
 
 ## Region
 
-If deploying to *Canada Central* or *Canada East* Azure regions, there are no availability zone options. If a disaster occurred at one of these datacenters the OpenShift cluster would suffer an outage, as opposed to an Azure region that had multiple zones or locations.  An option may be to stand up an OCP 4 cluster in Azure *Canada Central* and *Canada East*, providing multi region availability.
+If deploying to *Canada Central* or *Canada East* Azure regions, there are no availability zone options. If a disaster occurred at one of these datacenters the OpenShift cluster would suffer an outage. Opposed to an Azure region that had multiple zones or locations. An option may be to sand up an OCP 4 cluster in Azure Canada Central and Canada East providing multi region availability. 
 
 The first iteration will be deployed to Canada Central.
 
@@ -44,7 +45,7 @@ The SP account will need to be created in the Azure AD associated to the subscri
 
 ## Resource Groups
 
-The current version of OpenShift 4 makes use of an installer provisioned infrastructure (IPI).  The OpenShift installer will create the required infrastructure in Azure and then install OpenShift on to this infrastructure.  Due to this installation method some installation options are not configurable.  One of these is the *Azure Resource group* where all the Azure objects are contained. The Azure RG will be dynamically created with a name based off the name of the cluster e.g.; `ocp4lab-9qtf7-rg`.
+The current version of OpenShift 4 makes use of an installer provisioned infrastructure (IPI). The OpenShift installer will create the required infrastructure in Azure and then install OpenShift on to this infrastructure. Due to this installation method some installation options are not configurable. One of these is the *Azure Resource group* where all the Azure objects are contained. The Azure RG will be dynamically created with a name based off the name of the cluster e.g.; `ocp4lab-9qtf7-rg`.
 
 This option may change in later version but as of 4.2 & 4.3 we can not pre-create the RG.
 
@@ -52,7 +53,7 @@ This option may change in later version but as of 4.2 & 4.3 we can not pre-creat
 
 The install will start with 3 Master nodes and 3 worker nodes. This can be grown dynamically by updating machine-set replica numbers inside the cluster. 3 Infrastructure nodes will be deployed after the cluster is up and Infrastructure cluster components moved to these nodes. This will leave us 3-3-3 initial node set up.
 
-With the cluster running in Azure and leveraging cloud features growing the worker nodes is a simple as updating replica numbers and waiting for Azure to provision the node. The dynamic nature also allows scaling back worker nodes if no longer needed.
+With the cluster running in Azure and leveraging cloud features growing the worker nodes is a simple as updating replica numbers and waiting for Azure to provision the node. The dynamic nature also allows scaling back worker nodes if no longer needed also.
 
 ### Infrastructure nodes
 
@@ -71,9 +72,9 @@ Any node that runs any other container, pod, or component is a worker node that 
 
 The Azure `Standard_D8s_v3` machine type will be used for all six nodes.
 
+
 | Size | vCPU | Memory: GiB | Temp storage (SSD) GiB | Max data disks | Max cached and temp storage throughput: IOPS / MBps (cache size in GiB) | Max uncached disk throughput: IOPS / MBps | Max NICs / Expected network bandwidth (Mbps) |
 |-----------------|------|-------------|------------------------|----------------|-------------------------------------------------------------------------|-------------------------------------------|----------------------------------------------|
-| Standard_D4s_v3 | 4 | 16 | 32 | 8 | 8000 / 64 (100) | 6400 / 96 | 2 / 2000 |
 | **Standard_D8s_v3** | 8 | 32 | 64 | 16 | 16000 / 128 (200) | 12800 / 192 | 4 / 4000 |
 |  |  |  |  |  |  | |  |
 | **Count/Totals:**   9 VMs | 72 | 288 |  | 9 x 128GB SSD Disk = 1.15TB  |  |  |
@@ -86,7 +87,7 @@ The nodes will receive 1 OS disks with 128GB of storage. This is around the reco
 
 We will need a pull secret to give to the OpenShift 4 installer. The pull secret can be obtained here: https://cloud.redhat.com/openshift/install/pull-secret after logging in with a Red Hat account.
 
-When the cluster first comes up it will default to a 60 day evaluation. This will be fine as we plan to destroy and re-create. Once the cluster is up is a steady permanent state we will need to assign subscriptions to it via Red Hat portal.
+When the cluster first comes up it will default to a 60 day evaluation. This will be fine as we plan to destroy and re-create. Once the cluster is up is a steady permanent state we will need to assign subscriptions to it via Red Hat portal. 
 
 ### Subscription Count
 
@@ -96,7 +97,7 @@ The worker nodes will be the only nodes needing an Red Hat OpenShift Subscriptio
 
 The default networking options will be selected to start with, which can be changed at a later date.
 
-``` yaml
+```yaml
 networking:
   clusterNetwork:
   - cidr: 10.128.0.0/14
@@ -105,11 +106,15 @@ networking:
   networkType: OpenShiftSDN
   serviceNetwork:
   - 172.30.0.0/16
-```
+  ```
 
 The OpenShift 4 installer takes care of deploying and configuring required load balancers and setting up firewall rules. The network after deployment looks like the following:
 
 ![OCP4 Azure Network](azure-ocp4-network-diagram.png)
+
+We will be using the [private cluster](https://docs.openshift.com/container-platform/4.3/installing/installing_azure/installing-azure-private.html) method on Azure so load balancers will get private addresses. Public access will come in through on-prem Gov load balancers that map back to the Azure lbs. 
+
+We will also deploy to an existing vnet in Azure that the gov has set up. We configure this in the `install-config.yaml`. A vnet won't be created and the VMs will get IPs from the existing subnets. We need 2 subnets, 1 for the workers and 1 for the masters.
 
 ### DNS
 
@@ -117,7 +122,7 @@ The subdomain `clearwater.devops.gov.bc.ca` has been selected for the time being
 
 The subdomain `clearwater.devops.gov.bc.ca` will need to be delegated to Azure NS records.
 
-``` bash
+```bash
 ns1-07.azure-dns.com.
 ns2-07.azure-dns.net.
 ns3-07.azure-dns.org.
@@ -130,6 +135,7 @@ Default self signed certificates are in place after a fresh cluster install. Two
 
 * api.ocp4lab.clearwater.devops.gov.bc.ca
 * *apps.ocp4lab.clearwater.devops.gov.bc.ca
+
 
 ## Cluster PV Storage
 
@@ -148,7 +154,7 @@ We create a storage account in Azure and specify this in the azure-file storage 
 Note: This creates a publicly accessible storage service endpoints but locks down what networks can access it.
 * Secure Transfer: Enabled
 
-If we want to lock down the storage account to just the file service we can select Premium as the performance option.  The issue when using Premium is that the smallest size of the PV which relates to storage account quota is 100GB.  Premium is priced on provisioned storage where standard is priced on used storage.  Premium IO and network bandwidth limits scale with the provisioned share size.
+If we want to lock down the storage account to just the file service we can select Premium as the performance option. The issue is when using Premium the smallest size of the PV which relates to storage account quota is 100GB. Premium is priced on provisioned storage where standard is priced on used storage. Premium IO and network bandwidth limits scale with the provisioned share size.
 
 In our azure-file storage class we set a value for secretNamespace parameter, as this is the namespace that stores the storage account keys in a secret. If not set the storage account credentials may be read by other users.
 
@@ -163,19 +169,19 @@ In our azure-file storage class we set a value for secretNamespace parameter, as
 
 ## Logging Stack
 
-The OpenShift cluster logging components Elasticsearch, Fluentd, and Kibana will be deployed into the cluster.  This will allow for a longer retention of pod logs.
+The OpenShift cluster logging components Elasticsearch, Fluentd, and Kibana will be deployed into the cluster. This will allow for a longer retention of pod logs.
 
 A logging Curator will run every night a midnight. This will clear out logs older than 30 days which is the default. This can be highly customized about what project keeps how many logs. This will need to be reviewed as cluster application deployment goes up.
 
 ### Compute & Memory
 
-Elasticsearch has the largest resource consumption for the logging stack.  `16Gi` memory is the recommended minimum memory size per ES pod.  `3` ES replica pods will be configured as well so there is a ES pod per infrastructure node.  `2` CPU limits\requests per pod is also defined.  Totals for Elasticsearch are `48GB` of ram and `6` CPU cores.
+Elasticsearch has the largest resource consumption for the logging stack. `16Gi` memory is the recommended minimum memory size per ES pod. `3` ES replica pods will be configured as well so there is a ES pod per infrastructure node. `2` CPU limits\requests per pod is also defined. Totals for Elasticsearch are `48GB` of ram and `6` CPU cores. 
 
-Kibana resources defaults are minimal.  Fluentd needs a pod per node in the cluster to collect logs.  Default memory request/limit is `736Mi` which means a total of `6.6GB` memory for the initial node deployment.  CPU resources for Fluentd are minimal.
+Kibana resources defaults are minimal. Fluentd needs a pod per node in the cluster to collect logs. Default memory request/limit is `736Mi` which means a total of `6.6GB` memory for the initial node deployment. CPU resources for Fluentd are minimal.
 
 ### Storage
 
-Elasticsearch needs to store the indexes for the log data it receives.  It also needs to be available in case nodes go down for maintenance.  Will set `SingleRedundancy` for the redundancy policy which Elasticsearch makes one copy of the primary shards for each index.  Logs are always available and recoverable as long as at least two data nodes exist.  We will start with `200G` PVC for each of the ES pods.  Totalling `600GB` of Persistent Storage
+Elasticsearch needs to store the indexes for the log data it receives. It also needs to be available in case nodes go down for maintenance. Will set `SingleRedundancy` for the redundancy policy which Elasticsearch makes one copy of the primary shards for each index. Logs are always available and recoverable as long as at least two data nodes exist. We will start with `200G` PVC for each of the ES pods. Totalling `600GB` of Persistent Storage
 
 ### Resources
 
@@ -187,9 +193,14 @@ The cluster will be set up to use GitHub Organizations as the identity provider.
 
 Documentation here: https://docs.openshift.com/container-platform/4.2/authentication/identity_providers/configuring-github-identity-provider.html
 
+
 ## Costing
 
-Put in cost estimations here.
+This graph shows a snapshot of the running costs for OCP 4 cluster on Azure by day. The early Feb dates are the cluster mainly idling. The gap in the middle is the cluster being destroyed then created a few days later. The rise at the end of Feb are load tests being run against the cluster.
+
+![OCP4 Azure Costing](ocp4_azure_costs.png)
+
+Estimate would be daily costs around $200 a day on an active cluster.
 
 ## Metering
 
@@ -202,9 +213,9 @@ Metering is managed using the following CustomResourceDefinitions (CRDs):
 * **ReportQueries:** Contains the SQL queries used to perform analysis on the data contained within ReportDataSources.
 * **ReportDataSources:** Controls the data available to ReportQueries and Reports. Allows configuring access to different databases for use within metering.
 
-Metering is an operator installed via the operator hub.  Metering resources on cluster are minimal and require `4-5GB` of Memory for the pods and an initial `5GB` PVC.
+Metering is an operator installed via the operator hub. Metering resources on cluster are minimal and require `4-5GB` of Memory for the pods and an initial `5GB` PVC.
 
-After reports are created they are available in CSV format via the web UI under Administration->Chargeback or via the metering route.  CSV data can be set up to display in useful charts.
+After reports are created they are available in CSV format via the web UI under Administration->Chargeback or via the metering route. CSV data can be set up to display in useful charts.
 
 ![OCP4 Metering](metering.png)
 
