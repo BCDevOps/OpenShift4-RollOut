@@ -55,7 +55,7 @@ You will need to add Azure user to policies on the key vault to allow them to up
 
 * Grab [OpenShift 4 installer](https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/) and extract to executable path directory.
 
-* As some Azure resources providers are disabled we'll need to add this environment variable before we kick off the install or it will error out. Detailed explanation [here].(https://www.terraform.io/docs/providers/azurerm/index.html#skip_provider_registration)
+* As some Azure resources providers are disabled we may need to add this environment variable before we kick off the install or it will error out. Detailed explanation [here].(https://www.terraform.io/docs/providers/azurerm/index.html#skip_provider_registration)
 `export ARM_SKIP_PROVIDER_REGISTRATION=true`
 
 * Run the installer `openshift-install create cluster --dir DIRECTORY_YOU_MADE/ --log-level debug`
@@ -63,10 +63,6 @@ You will need to add Azure user to policies on the key vault to allow them to up
 
 ## Configure OCP 4 on Azure
 
-The post install configuration is handled with the Terraform plan and ocp config files in the `ocp4-config` directory
+The post install configuration is handled with Ansible and Terraform using ocp config files in the `ocp4-config` directory.
 
-
---extra-vars "github_oauth_secret=foo github_oauth_clientid="
-
-
-az account set --subscription XXXX
+`ansible-playbook -v azure-ocp4-postconfig.yml --extra-vars "github_oauth_secret=xxxx github_oauth_clientid=xxxx"`

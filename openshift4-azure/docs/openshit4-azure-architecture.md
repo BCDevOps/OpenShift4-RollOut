@@ -75,7 +75,6 @@ The Azure `Standard_D8s_v3` machine type will be used for all six nodes.
 
 | Size | vCPU | Memory: GiB | Temp storage (SSD) GiB | Max data disks | Max cached and temp storage throughput: IOPS / MBps (cache size in GiB) | Max uncached disk throughput: IOPS / MBps | Max NICs / Expected network bandwidth (Mbps) |
 |-----------------|------|-------------|------------------------|----------------|-------------------------------------------------------------------------|-------------------------------------------|----------------------------------------------|
-| Standard_D4s_v3 | 4 | 16 | 32 | 8 | 8000 / 64 (100) | 6400 / 96 | 2 / 2000 |
 | **Standard_D8s_v3** | 8 | 32 | 64 | 16 | 16000 / 128 (200) | 12800 / 192 | 4 / 4000 |
 |  |  |  |  |  |  | |  |
 | **Count/Totals:**   9 VMs | 72 | 288 |  | 9 x 128GB SSD Disk = 1.15TB  |  |  |
@@ -113,6 +112,9 @@ The Openshift 4 installer takes care of deploying and configuring required load 
 
 ![OCP4 Azure Network](azure-ocp4-network-diagram.png)
 
+We will be using the [private cluster](https://docs.openshift.com/container-platform/4.3/installing/installing_azure/installing-azure-private.html) method on Azure so load balancers will get private addresses. Public access will come in through on-prem Gov load balancers that map back to the Azure lbs. 
+
+We will also deploy to an existing vnet in Azure that the gov has set up. We configure this in the `install-config.yaml`. A vnet won't be created and the VMs will get IPs from the existing subnets. We need 2 subnets, 1 for the workers and 1 for the masters.
 
 ### DNS
 
@@ -194,7 +196,11 @@ Documentation here: https://docs.openshift.com/container-platform/4.2/authentica
 
 ## Costing
 
-Put in cost estimations here.
+This graph shows a snapshot of the running costs for OCP 4 cluster on Azure by day. The early Feb dates are the cluster mainly idling. The gap in the middle is the cluster being destroyed then created a few days later. The rise at the end of Feb are load tests being run against the cluster.
+
+![OCP4 Azure Costing](ocp4_azure_costs.png)
+
+Estimate would be daily costs around $200 a day on an active cluster.
 
 ## Metering
 
