@@ -60,6 +60,8 @@ You will need to add Azure user to policies on the key vault to allow them to up
 
 * Run the installer `openshift-install create cluster --dir DIRECTORY_YOU_MADE/ --log-level debug`
 
+* Destroy the installer `openshift-install destroy cluster --dir DIRECTORY_YOU_MADE/ --log-level debug`
+
 
 ## Configure OCP 4 on Azure
 
