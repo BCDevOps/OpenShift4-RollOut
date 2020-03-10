@@ -22,41 +22,42 @@ Assumption is that all infrastructure requirements are in place and configured a
 - [ ] Create DS for HPE Tools (ie hard drive settings)
 
 **Cluster setup:**
-- [ ] Convert Infra nodes from workers to infras
-  - [ ] Move cluster services to infra nodes
-- [ ] Set up Trident configs
-  - [ ] Set up Trident
-  - [ ] Configure the SVM
-  - [ ] Install tridentctl
-  - [ ] Install Trident
-  - [ ] Set up backends
-  - [ ] Create storage classes
-  - [ ] Storage Pool Configuration (netapp-block-standard, netapp-file-standard)
+- [ ] *Convert Infra nodes from workers to infras
+  - [ ] *Move cluster services to infra nodes
+- [ ] *Set up Trident configs
+  - [ ] *Set up Trident
+  - [ ] *Configure the SVM
+  - [ ] *Install tridentctl
+  - [ ] *Install Trident
+  - [ ] *Set up backends
+  - [ ] *Create storage classes
+  - [ ] *Storage Pool Configuration (netapp-block-standard, netapp-file-standard)
+  - [ ] Create new storage classes (flexvol direct volumes eg: netapp-block-extended, netapp-block-extended)
 - [ ] Scale registry to 3 infra nodes, add storage
-  - [ ] Registry configuration with storage (S3? NFS)
-- [ ] Set up Aggregated Logging
-- [ ] Add custom TLS certs for API and *.apps
-- [ ] Set up GitHub authentication, delete default kubeadmin
-- [ ] Configure F5 Controller
-- [ ] Configure Cluster Monitoring operator
-- [ ] ETCD Backup
-- [ ] Certificates for external endpoints (may require procurements)
+  - [ ] *Registry configuration with object storage trial
+  - [ ] *Registry configuration with block storage (interim)
+- [ ] *Set up Aggregated Logging
+- [ ] *Add custom TLS certs for API and *.apps
+- [ ] *Set up GitHub authentication, delete default kubeadmin
+- [ ] *Configure F5 Controller
+- [ ] *Configure Cluster Monitoring operator
+- [ ] *ETCD Backup
 - [ ] Cluster Metering(?)
 - [ ] Rebuild OCP-Monitor checks
 
 ## Platform OCP Configuration
 
-- [ ] Restricted cluster RBAC
-  - [ ] Cluster Admins, Cluster Viewers
-  - [ ] BCDevExch Service account and "oc --as" permission setup
-  - [ ] Restricted project/namespace creation
+- [ ] *Restricted cluster RBAC
+  - [ ] *Cluster Admins, Cluster Viewers
+  - [ ] *BCDevExch Service account and "oc --as" permission setup
+  - [ ] *Restricted project/namespace creation
   - ... *more?*
-- [ ] Set default project template
-- [ ] Quota Applier
-- [ ] Customize web console in LABs to add a banner
-- [ ] Service Catalog
+- [ ] *Set default project template
+- [ ] *Quota Applier
+- [ ] *Customize web console in LABs to add a banner
+- [ ] *Service Catalog
   - [ ] *Samples* Operator (updater for openshift namespace templates and images)
-  - [ ] *Template Service Broker*
+  - [ ] **Template Service Broker
   - [ ] *Ansible Service Broker* (do we want to deploy this?)
 - ... *more?*
 
@@ -72,3 +73,8 @@ Assumption is that all infrastructure requirements are in place and configured a
   - [ ] Operator(s)
   - [ ] replication?
 - ... *more?*
+
+## Feature additions
+
+- [ ] Trident storage class for enterprise backup integrated volumes
+
