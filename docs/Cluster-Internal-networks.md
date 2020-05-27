@@ -1,6 +1,6 @@
 # Cluster Internal Network design
 
-This document contains the information used to decide whether to provision separate (unique) networks for each OpenShift 4 cluster.  The current design requires routeable (public) IP addresses only at the F5 ingress/egress points for each cluster, and we are not looking to change the design of using non-routeable IP addresses for the following networks.  The decision in question is whether we can re-use the same private network ranges for multiple clusters.  This decision supports a critical cluster component, which if changed, would require a full re-installation of a given cluster.
+This document contains the information used to decide whether to provision separate (unique) networks for each OpenShift 4 cluster.  The current design requires routeable (public) IP addresses only at the F5 ingress/egress points for each cluster, and we are not looking to change the design of using private (non-internet routable) IP addresses for the rest of the networks.  The decision in question is whether we can re-use the same private network ranges for multiple clusters.  This decision supports a critical cluster component, which if changed, would require a full re-installation of a given cluster.
 
 ## Background
 
