@@ -17,13 +17,13 @@ With each OpenShift cluster, internal networks are used for in-cluster communica
 
 Host IP addresses are used to NAT each hosted PODs outgoing traffic, as well as host specific node/cluster related services.  Incoming application traffic will not be directed at a host IP address.  While we are planning to use outgoing NAT on the F5, there are situations where we may want to be able to direct route to these host IP addresses from inside the data-centres.  Current OCP3 leverages public IP addresses for all host/nodes so a pre-build list of services that would require direct access has not been described/tested yet.
 
-A separate (unique) Host/Node network for each cluster is recommended.
+A separate, unique, private and routable Host/Node network for each cluster is recommended.
 
 ### Storage Network
 
 This network will be leveraged for high speed communication between the NetApp appliance and the cluster Hosts/Nodes.  While no other access is planned for this network, there are still design elements to identify (eg: backup network integration, etc) that may benefit from a unique network assignment.
 
-A separate (unique) Storage network for each cluster is recommended.
+A separate, unique, private Storage network for each cluster is recommended.  With private routing to be determined by Backup service requirements.
 
 ### Cluster Pod and Service Networks
 
