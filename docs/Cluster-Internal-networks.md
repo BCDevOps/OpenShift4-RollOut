@@ -1,6 +1,6 @@
 # Cluster Internal Network design
 
-This document contains the information used to decide whether to provision separate (unique) networks for each OpenShift 4 cluster.  The current design requires routeable (public) IP addresses only at the F5 ingress/egress points for each cluster, and we are not looking to change the design of using private (non-internet routable) IP addresses for the rest of the networks.  The decision in question is whether we can re-use the same private network ranges for multiple clusters.  This decision supports a critical cluster component, which if changed, would require a full re-installation of a given cluster.
+This document contains the information used to decide whether to provision separate (unique) networks for each OpenShift 4 cluster.  The current design requires public IP addresses at the F5 ingress/egress points for each cluster, and private IP addresses for the rest of the networks.  The decision in question is whether we can re-use the same private network ranges for multiple clusters.  This decision supports critical cluster network components, which if changed, would require a full re-installation of a given cluster.
 
 ## Background
 
@@ -15,15 +15,17 @@ With each OpenShift cluster, internal networks are used for in-cluster communica
 
 ### Host/Node Network
 
-Host IP addresses are used to NAT each hosted PODs outgoing traffic, as well as host specific node/cluster related services.  Incoming application traffic will not be directed at a host IP address.  While we are planning to use outgoing NAT on the F5, there are situations where we may want to be able to direct route to these host IP addresses from inside the data-centres.  Current OCP3 leverages public IP addresses for all host/nodes so a pre-build list of services that would require direct access has not been described/tested yet.
+Host IP addresses are used to NAT each hosted PODs outgoing traffic, as well as host specific node/cluster related services.  Incoming application traffic will not be directed at a host IP address.  While we are planning to use outgoing NAT on the F5, there may be situations in the future where we need to be able to direct route to these host IP addresses from other BC Gov networks (eg: future Aporeto design potential for bridging zone access may need route-able endpoints).
 
-A separate, unique, private and routable Host/Node network for each cluster is recommended.
+Changing the Host/Node network in the future would require a full cluster rebuild or migration.
+
+A private and route-able Host/Node network for each cluster is recommended.
 
 ### Storage Network
 
-This network will be leveraged for high speed communication between the NetApp appliance and the cluster Hosts/Nodes.  While no other access is planned for this network, there are still design elements to identify (eg: backup network integration, etc) that may benefit from a unique network assignment.
+This network will be leveraged for high speed communication between the NetApp appliance and the cluster Hosts/Nodes.  No other access is planned for a cluster's storage network, storage is not shared between clusters, and backup service integration will leverage a separate backup interface as determined by the hosting service.
 
-A separate, unique, private Storage network for each cluster is recommended.  With private routing to be determined by Backup service requirements.
+A private and non-routable Storage network for each cluster is recommended.
 
 ### Cluster Pod and Service Networks
 
@@ -35,7 +37,7 @@ Choosing to re-use the internal cluster networks (for pods and services) will re
 
 The current production architecture defines a *Silver* platform that includes a single cluster, and *Gold* platform that is made up of 2 clusters in separate physical regions.
 
-The recommendation is to leverage unique cluster pod/service networks within each region.  This would allow the option of a single Istio Backplane across the Gold clusters in the future, while not demanding unique pod/service networks in every cluster.  This would allow partial re-use of reserved networks while not blocking a future design pattern we may need to leverage.
+The recommendation is to leverage private non-routable cluster pod/service networks within each region.  This would enable the possibility for a single Istio Backplane across the Gold clusters in the future, while not demanding separate non-routable pod/service networks in every cluster.
 
 Diagram to illustrate use of unique pod/service networks:
 
