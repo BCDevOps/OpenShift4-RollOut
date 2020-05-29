@@ -42,3 +42,14 @@ The recommendation is to leverage private non-routable cluster pod/service netwo
 Diagram to illustrate use of unique pod/service networks:
 
 ![Unique Networks](images/Internal-Network-Usage.png)
+
+## Network Sizing
+
+A brief note to highlight recommended sizing for the networks described above:
+
+Host/Node Networks - The size recommended for a production environment is a `/25` network to allow for ~120 nodes in a cluster.  The size for a lab cluster can be shrunk to a `/26` or possibly a `/27`.  The Lab clusters are also much easier to re-deploy without production impact.
+
+Storage Networks - The size recommended for a storage network should match the above Host/Node network size.
+
+Internal Pod/Service Networks - The size recommended for a production environment is a `/16` for each of these networks.  This follows the Redhat Guidelines for sizing internal networks found here: <https://docs.openshift.com/container-platform/4.4/installing/installing_bare_metal/installing-bare-metal.html#installation-bare-metal-config-yaml_installing-bare-metal>
+
