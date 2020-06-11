@@ -37,7 +37,9 @@ Choosing to re-use the internal cluster networks (for pods and services) will re
 
 The current production architecture defines a *Silver* platform that includes a single cluster, and *Gold* platform that is made up of 2 clusters in separate physical regions.
 
-The recommendation is to leverage private non-routable cluster pod/service networks within each region.  This would enable the possibility for a single Istio Backplane across the Gold clusters in the future, while not demanding separate non-routable pod/service networks in every cluster.
+## Recommendation
+
+Leverage private non-routable cluster pod/service networks within each region.  This would enable the possibility for a single Istio Backplane across the Gold clusters in the future, while not demanding separate non-routable pod/service networks in every cluster.
 
 Diagram to illustrate use of unique pod/service networks:
 
