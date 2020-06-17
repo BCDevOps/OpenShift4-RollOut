@@ -5,14 +5,14 @@ Assumption is that all infrastructure requirements are in place and configured a
 ## Platform Setup
 
 **Host setup:**
-- [ ] idmapd.conf Set NFS Domain
-- [ ] iscsid.conf Set node.session.timeo.replacement_timeout = 5
-- [ ] Enable iscsid service
-- [ ] Enable multipathd service
-- [ ] initiatorname.iscsi Set InitiatorName
-- [ ] Set up other system configs
-- [ ] chrony.conf set NTP servers
-- [ ] Set vga=14c
+- [x] idmapd.conf Set NFS Domain
+- [x] iscsid.conf Set node.session.timeo.replacement_timeout = 5
+- [x] Enable iscsid service
+- [x] Enable multipathd service
+- [x] initiatorname.iscsi Set InitiatorName
+- [x] Set up other system configs
+- [x] chrony.conf set NTP servers
+- [x] Set vga=14c
 - [ ] Basic Nagios monitoring
 - [ ] Figure out Ignition for physicals/bonding
 - [ ] Create DS for EnCase
@@ -22,24 +22,24 @@ Assumption is that all infrastructure requirements are in place and configured a
 - [ ] Create DS for HPE Tools (ie hard drive settings)
 
 **Cluster setup:**
-- [ ] *Convert Infra nodes from workers to infras
-  - [ ] *Move cluster services to infra nodes
-- [ ] *Set up Trident configs
-  - [ ] *Set up Trident
-  - [ ] *Configure the SVM
-  - [ ] *Install tridentctl
-  - [ ] *Install Trident
-  - [ ] *Set up backends
-  - [ ] *Create storage classes
-  - [ ] *Storage Pool Configuration (netapp-block-standard, netapp-file-standard)
-  - [ ] Create new storage classes (flexvol direct volumes eg: netapp-block-extended, netapp-block-extended)
-- [ ] Scale registry to 3 infra nodes, add storage
+- [x] *Convert Infra nodes from workers to infras
+  - [x] *Move cluster services to infra nodes
+- [x] *Set up Trident configs
+  - [x] *Set up Trident
+  - [x] *Configure the SVM
+  - [x] *Install tridentctl
+  - [x] *Install Trident
+  - [x] *Set up backends
+  - [x] *Create storage classes
+  - [x] *Storage Pool Configuration (netapp-block-standard, netapp-file-standard)
+  - [x] Create new storage classes (flexvol direct volumes eg: netapp-block-extended, netapp-block-extended)
+- [x] Scale registry to 3 infra nodes, add storage
   - [ ] *Registry configuration with object storage trial
-  - [ ] *Registry configuration with block storage (interim)
-- [ ] *Set up Aggregated Logging
-- [ ] *Add custom TLS certs for API and *.apps
-- [ ] *Set up GitHub authentication, delete default kubeadmin
-- [ ] *Configure F5 Controller
+  - [x] *Registry configuration with file storage (interim)
+- [x] *Set up Aggregated Logging
+- [x] *Add custom TLS certs for API and *.apps
+- [x] *Set up GitHub authentication, delete default kubeadmin
+- [x] *Configure F5 Controller
 - [ ] *Configure Cluster Monitoring operator
 - [ ] *ETCD Backup
 - [ ] Cluster Metering(?)
@@ -47,14 +47,14 @@ Assumption is that all infrastructure requirements are in place and configured a
 
 ## Platform OCP Configuration
 
-- [ ] *Restricted cluster RBAC
-  - [ ] *Cluster Admins, Cluster Viewers
-  - [ ] *BCDevExch Service account and "oc --as" permission setup
-  - [ ] *Restricted project/namespace creation
+- [x] *Restricted cluster RBAC
+  - [x] *Cluster Admins, Cluster Viewers
+  - [x] *BCDevExch Service account and "oc --as" permission setup
+  - [x] *Restricted project/namespace creation
   - ... *more?*
-- [ ] *Set default project template
+- [x] *Set default project template
 - [ ] *Quota Applier
-- [ ] *Customize web console in LABs to add a banner
+- [x] *Customize web console in LABs to add a banner
 - [ ] *Service Catalog
   - [ ] *Samples* Operator (updater for openshift namespace templates and images)
   - [ ] **Template Service Broker
