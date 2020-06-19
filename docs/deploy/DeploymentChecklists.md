@@ -55,10 +55,6 @@ Assumption is that all infrastructure requirements are in place and configured a
 - [x] *Set default project template
 - [ ] *Quota Applier
 - [x] *Customize web console in LABs to add a banner
-- [ ] *Service Catalog
-  - [ ] *Samples* Operator (updater for openshift namespace templates and images)
-  - [ ] **Template Service Broker
-  - [ ] *Ansible Service Broker* (do we want to deploy this?)
 - ... *more?*
 
 ## Licensed Platform Tools
